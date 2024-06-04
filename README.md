@@ -1,2 +1,2 @@
 # TypeScriptChallenge
-Repository to development TypeScript Challenge
+Repository to development TypeScript Team management API
