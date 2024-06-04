@@ -1,64 +1,48 @@
 import { IUser } from "../interfaces/interfaces";
 import { Request, Response } from "express";
-import UserService from '../services/UserService';
+import UserService from "../services/UserService";
 
 export default class UserController {
-    private userService: UserService;
+  private userService: UserService;
 
-    constructor() {
-      this.userService = new UserService();
-    }
+  constructor() {
+    this.userService = new UserService();
+  }
 
-    public async getMyUser(req: Request, res: Response): Promise<void> {
-        try {
-            const id: string = req.body.id;
-            const user: IUser = await this.userService.getMyUser(id);
+  public async getMyUser(req: Request, res: Response): Promise<void> {
+    try {
+      const id: string = req.body.id;
 
-            res.status(200).json( user );
-        } catch (error) {
-            console.log(error);
-            
-            res.status(400).json({ message: 'deu ruim'})
-        }
-    }
-    
-    public async getAllUsers(req: Request, res: Response): Promise<void> {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
+      const user: IUser = await this.userService.getMyUser(id);
 
-    public async getUserId(req: Request, res: Response): Promise<void> {
-        try {
-            
-        } catch (error) {
-            
-        }
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ message: error });
     }
+  }
 
-    public async createUser(req: Request, res: Response): Promise<void> {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
+  public async getAllUsers(req: Request, res: Response): Promise<void> {
+    try {
+    } catch (error) {}
+  }
 
-    public async updateUser(req: Request, res: Response): Promise<void> {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
+  public async getUserId(req: Request, res: Response): Promise<void> {
+    try {
+    } catch (error) {}
+  }
 
-    public async deleteuser(req: Request, res: Response): Promise<void> {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
-};
+  public async createUser(req: Request, res: Response): Promise<void> {
+    try {
+    } catch (error) {}
+  }
+
+  public async updateUser(req: Request, res: Response): Promise<void> {
+    try {
+    } catch (error) {}
+  }
+
+  public async deleteuser(req: Request, res: Response): Promise<void> {
+    try {
+    } catch (error) {}
+  }
+}
