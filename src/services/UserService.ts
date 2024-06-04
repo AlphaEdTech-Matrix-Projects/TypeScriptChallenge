@@ -10,8 +10,8 @@ export default class UserService {
 
   public async getMyUser(id: string): Promise<IUser> {
     try {
-      const user:IUser = await this.userRepository.getMyUser(id);
-      return user;
+      return await this.userRepository.getMyUser(id);
+      // return user;
     } catch (exception: any) {
       throw exception;
     }
