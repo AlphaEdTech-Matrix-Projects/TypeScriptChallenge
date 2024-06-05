@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import pg, { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
-import IExecuteQuery from '../interfaces/IExecuteQuery';
+import { IExecuteQuery } from '../interfaces/interfaces';
 
 class Database {
   private pool: Pool;
@@ -29,7 +29,7 @@ class Database {
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;
-    }finally{
+    } finally {
       client.release();
     }
   }
