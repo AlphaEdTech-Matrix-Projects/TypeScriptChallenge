@@ -32,7 +32,7 @@ export default class UserService {
     id: string,
     fields: Partial<IUser>,
     logedUser: IUser
-  ): Promise<IUser> {
+  ): Promise<IUser | null> {
     
     let oldUser;
    
@@ -67,19 +67,20 @@ export default class UserService {
         isAdmin: fields.isAdmin || oldUser.isAdmin,
       };
 
-    return await this.userRepository.updateUserById(id, newUser);
+    return await this.userRepository.updateUserById({...newUser, id});
   }
  
-  public async deleteUserById(id: string,logedUser): Promise<IUser> {
+  public async deleteUserById(id: string,logedUser:IUser): Promise<IUser | null> {
     if(logedUser.isAdmin !== true){
       throw new UnauthorizedException("Você não tem permissão para essa ação");
     }
-    const deletedUser = await this.userRepository.getUserById(id);
-    if(!deletedUser){
+    const result = await this.userRepository.getUserById(id);
+
+    if(!result){
       throw new NotFoundException("Usuário não encontrado");
     }
-    return await this.userRepository.deleteUserById(deletedUser);
-  }
 
+    return await this.userRepository.deleteUserById(result);
+  }
 
 }
