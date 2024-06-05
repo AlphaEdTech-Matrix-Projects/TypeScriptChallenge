@@ -17,5 +17,5 @@
   },
   "include": [
     "src/**/*.ts"
-, "src/database/teste_database.js", "src/database/Database.js"  ]
+  ]
 }
