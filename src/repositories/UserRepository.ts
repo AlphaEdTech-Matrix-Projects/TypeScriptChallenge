@@ -8,8 +8,12 @@ export default class UserRepository {
     try {
       const result: QueryResultRow = await database.executeQuery({
         query: `Select * FROM users WHERE id = $1`,
-        args: [id]
+        args: [id],
       });
+
+      if (result.length === 0) {
+        throw new NotFoundException("Usuario não encontrado");
+      }
 
       const user: IUser = {
         id: result[0].id,
@@ -17,13 +21,12 @@ export default class UserRepository {
         firstName: result[0].first_name,
         lastName: result[0].last_name,
         email: result[0].email,
-        isAdmin: result[0].is_admin
-      }
+        isAdmin: result[0].is_admin,
+      };
 
       return user;
     } catch (error: any) {
-      console.error("Error ao buscar usuário:", error);
-      throw new NotFoundException('Usuário não encontrado.');
+      throw error;
     }
   }
 
@@ -73,4 +76,5 @@ export default class UserRepository {
       throw new InternalServerException();
     }
   }
+
 }
