@@ -68,3 +68,13 @@ export class ForbiddenException extends Exception {
     });
   }
 }
+
+export class UsernameOrPasswordIncorrectException extends Exception {
+  constructor(error: string) {
+    super({
+      name: "UsernameOrPasswordIncorrectException",
+      error: error,
+      statusCode: 401,
+    });
+  }
+}

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import JwtTokenService from "../utils/JwtTokenService";
 import UserRepository from "../repositories/UserRepository";
 import { IUser } from "../interfaces/interfaces";
+import JwtTokenService from "../utils/JwtTokenService";
 
 declare global {
   namespace Express {
@@ -24,7 +24,7 @@ export default async function AuthMiddleware(
         user_id: string;
       };
 
-      const user = await new UserRepository().getMyUser(tokenVerify.user_id);
+      const user = await new UserRepository().getUserById(tokenVerify.user_id);
 
       if (user) {
         req.authUser = user;

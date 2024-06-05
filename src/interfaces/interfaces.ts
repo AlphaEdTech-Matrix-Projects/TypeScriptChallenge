@@ -1,10 +1,10 @@
 export interface IExecuteQuery {
-  query: string,
-  args?: any[]
+  query: string;
+  args?: any[];
 }
 
 export interface IUser {
-  id?: string;
+  id: string;
   username: string;
   firstName: string;
   lastName: string;
@@ -14,8 +14,8 @@ export interface IUser {
   isAdmin: boolean;
 }
 
-export interface ISquad{
-  id?:string;
+export interface ISquad {
+  id?: string;
   name: string;
   leaderId: string;
 }
