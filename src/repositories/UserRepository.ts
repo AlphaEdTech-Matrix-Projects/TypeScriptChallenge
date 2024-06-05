@@ -7,7 +7,7 @@ export default class UserRepository {
     try {
       const result: QueryResultRow = await database.executeQuery({
         query: `Select * FROM users WHERE id = $1`,
-        args: [id]
+        args: [id],
       });
 
       if (!result || result.length === 0) {
@@ -19,9 +19,10 @@ export default class UserRepository {
         username: result[0].username,
         firstName: result[0].first_name,
         lastName: result[0].last_name,
+        squadId: result[0].fk_squad_id,
         email: result[0].email,
-        isAdmin: result[0].is_admin
-      }
+        isAdmin: result[0].is_admin,
+      };
 
       return user;
     } catch (error: any) {
@@ -47,6 +48,7 @@ export default class UserRepository {
       firstName: result[0].first_name,
       lastName: result[0].last_name,
       email: result[0].email,
+      squadId: result[0].fk_squad_id,
       password: result[0].password,
       isAdmin: result[0].is_admin,
     };
@@ -54,9 +56,7 @@ export default class UserRepository {
     return user;
   }
 
-  public async getUserByEmail(
-    email: string
-  ): Promise<IUser | null> {
+  public async getUserByEmail(email: string): Promise<IUser | null> {
     const result: QueryResultRow = await database.executeQuery({
       query: `Select * FROM users WHERE email = $1`,
       args: [email],
@@ -72,6 +72,7 @@ export default class UserRepository {
       firstName: result[0].first_name,
       lastName: result[0].last_name,
       email: result[0].email,
+      squadId: result[0].fk_squad_id,
       isAdmin: result[0].is_admin,
     };
 
@@ -90,6 +91,7 @@ export default class UserRepository {
         firstName: res.first_name,
         lastName: res.last_name,
         email: res.email,
+        squadId: res.fk_squad_id,
         isAdmin: res.is_admin,
       };
     });
@@ -115,14 +117,26 @@ export default class UserRepository {
       firstName: result[0].first_name,
       lastName: result[0].last_name,
       email: result[0].email,
+      squadId: result[0].fk_squad_id,
       isAdmin: result[0].is_admin,
     };
 
     return createdUser;
   }
 
-  public async updateUserById(user: Partial<IUser> & { id: string }): Promise<IUser | null> {
-    const { id, username, firstName, lastName, email, password, squadId, isAdmin } = user;
+  public async updateUserById(
+    user: Partial<IUser> & { id: string }
+  ): Promise<IUser | null> {
+    const {
+      id,
+      username,
+      firstName,
+      lastName,
+      email,
+      password,
+      squadId,
+      isAdmin,
+    } = user;
 
     try {
       const result: QueryResultRow = await database.executeQuery({
@@ -139,7 +153,16 @@ export default class UserRepository {
           WHERE id = $8
           RETURNING *;
         `,
-        args: [username, firstName, lastName, email, password, squadId, isAdmin, id],
+        args: [
+          username,
+          firstName,
+          lastName,
+          email,
+          password,
+          squadId,
+          isAdmin,
+          id,
+        ],
       });
 
       if (!result || result.length === 0) {
@@ -162,11 +185,11 @@ export default class UserRepository {
     }
   }
 
-  public async deleteUserById(user: IUser):Promise<IUser | null> {
-    try{
-      const result:QueryResultRow = await database.executeQuery({
+  public async deleteUserById(user: IUser): Promise<IUser | null> {
+    try {
+      const result: QueryResultRow = await database.executeQuery({
         query: `DELETE FROM users WHERE id = $1`,
-        args: [user.id]
+        args: [user.id],
       });
 
       if (!result || result.length === 0) {
@@ -184,7 +207,7 @@ export default class UserRepository {
       };
 
       return deletedUser;
-    }catch(error){
+    } catch (error) {
       throw error;
     }
   }
