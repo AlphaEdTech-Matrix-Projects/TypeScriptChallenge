@@ -1,6 +1,8 @@
 import { IUser } from "../interfaces/interfaces";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import UserService from "../services/UserService";
+import { UnauthorizedException } from "../utils/Exception";
+import AuthorizedNeed from "../utils/AuthorizedNeed";
 
 export default class UserController {
   private userService: UserService;
@@ -9,15 +11,17 @@ export default class UserController {
     this.userService = new UserService();
   }
 
-  public async getMyUser(req: Request, res: Response): Promise<void> {
+  public async getMyUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const id: string = req.body.id;
+      AuthorizedNeed(req);
 
-      const user: IUser = await this.userService.getMyUser(id);
-
-      res.status(200).json(user);
+      res.status(200).json(req.authUser);
     } catch (error) {
-      res.status(400).json({ message: error });
+      next(error);
     }
   }
 
