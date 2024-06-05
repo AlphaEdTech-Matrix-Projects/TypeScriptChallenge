@@ -62,17 +62,17 @@ export default class TeamService {
     }
 
     if (user.id === data.leaderId) {
-      throw new ForbiddenException("Admin não pode participar de um time");
+      throw new ForbiddenException(Message.ADMIN_CANNOT_JOIN_TEAM);
     }
 
     const userData = await this.userRepository.getUserById(data.leaderId);
 
     if (!userData) {
-      throw new NotFoundException("User not found");
+      throw new NotFoundException(Message.USER_NOT_FOUND);
     }
 
     if (userData.squadId !== null) {
-      throw new ConflictException("Usuario já está em um time");
+      throw new ConflictException(Message.USER_ALREADY_TEAM);
     }
 
     const userAlreadyTeam = await this.teamRepository.getByLeaderId(
@@ -80,7 +80,7 @@ export default class TeamService {
     );
 
     if (userAlreadyTeam) {
-      throw new ConflictException("Usuario já é dono de um time");
+      throw new ConflictException(Message.USER_ALREADY_LEADER);
     }
 
     const createdTeam = await this.teamRepository.create(data);
@@ -98,7 +98,7 @@ export default class TeamService {
     const team = await this.teamRepository.getById(team_id);
 
     if (!team) {
-      throw new NotFoundException("Time não existe");
+      throw new NotFoundException(Message.TEAM_NOT_FOUND);
     }
 
     if (!user.isAdmin && team.leaderId !== user.id) {
@@ -106,23 +106,23 @@ export default class TeamService {
     }
 
     if (user.isAdmin && user.id === user_id) {
-      throw new ConflictException("Usuario é um admin");
+      throw new ConflictException(Message.USER_IS_ADMIN);
     }
 
     const userToAdd = await this.userRepository.getUserById(user_id);
 
     if (!userToAdd) {
-      throw new NotFoundException("Usuario não encontrado");
+      throw new NotFoundException(Message.USER_NOT_FOUND);
     }
 
     if (userToAdd.squadId !== null) {
-      throw new ConflictException("Usuario já está em um time");
+      throw new ConflictException(Message.USER_ALREADY_TEAM);
     }
 
     const members = await this.teamRepository.getMembers(team_id);
 
     if (members.length >= 5) {
-      throw new ConflictException("Tamanho maximo de time atingido");
+      throw new ConflictException(Message.TEAM_MAX_SIZE);
     }
 
     const userUpdated = await this.teamRepository.addMember(
@@ -131,7 +131,7 @@ export default class TeamService {
     );
 
     if (!userUpdated) {
-      throw new Error("Falha ao adicionar membro");
+      throw new Error(Message.FAILED_ADD_MEMBER);
     }
 
     return userUpdated;
@@ -145,7 +145,7 @@ export default class TeamService {
     const team = await this.teamRepository.getById(team_id);
 
     if (!team) {
-      throw new NotFoundException("Time não existe");
+      throw new NotFoundException(Message.TEAM_NOT_FOUND);
     }
 
     if (!user.isAdmin && team.leaderId !== user.id) {
@@ -153,23 +153,23 @@ export default class TeamService {
     }
 
     if (team.leaderId === user_id) {
-      throw new ForbiddenException("Lider não pode se remover do time");
+      throw new ForbiddenException(Message.LEADER_NOT_REMOVE_SELF);
     }
 
     const userToRemove = await this.userRepository.getUserById(user_id);
 
     if (!userToRemove) {
-      throw new NotFoundException("Usuario não encontrado");
+      throw new NotFoundException(Message.USER_NOT_FOUND);
     }
 
     if (userToRemove.squadId !== team.id) {
-      throw new NotFoundException("Esse usuario não pertece a esse time");
+      throw new NotFoundException(Message.USER_NOT_ALREADY_TEAM);
     }
 
     const userUpdated = await this.teamRepository.removeMember(userToRemove.id);
 
     if (!userUpdated) {
-      throw new Error("Falha ao adicionar membro");
+      throw new Error(Message.FAILED_REMOVE_MEMBER);
     }
 
     return userUpdated;
@@ -179,7 +179,7 @@ export default class TeamService {
     const team = await this.teamRepository.getById(team_id);
 
     if (!team) {
-      throw new NotFoundException("Time não existe");
+      throw new NotFoundException(Message.TEAM_NOT_FOUND);
     }
 
     if (!user.isAdmin && team.leaderId !== user.id) {
@@ -189,13 +189,13 @@ export default class TeamService {
     const teamMembers = await this.teamRepository.getMembers(team.id);
 
     if (teamMembers.length > 1) {
-      throw new ConflictException("Time não pode ter membros");
+      throw new ConflictException(Message.TEAM_ALREADY_MEMBERS);
     }
 
     const teamDeleted = await this.teamRepository.delete(team.id);
 
     if (!teamDeleted) {
-      throw new Error("Falha ao deletar time");
+      throw new Error(Message.FAILED_DELETE_TEAM);
     }
 
     return teamDeleted;
@@ -209,7 +209,7 @@ export default class TeamService {
     const team = await this.teamRepository.getById(team_id);
 
     if (!team) {
-      throw new NotFoundException("Time não existe");
+      throw new NotFoundException(Message.TEAM_NOT_FOUND);
     }
 
     if (!user.isAdmin && team.leaderId !== user.id) {
@@ -220,18 +220,18 @@ export default class TeamService {
       const userToLeader = await this.userRepository.getUserById(data.leaderId);
 
       if (!userToLeader) {
-        throw new NotFoundException("Usuario não encontrado");
+        throw new NotFoundException(Message.USER_NOT_FOUND);
       }
 
       if (userToLeader.squadId !== null) {
-        throw new ConflictException("Usuario já está em outra squad");
+        throw new ConflictException(Message.USER_ALREADY_TEAM);
       }
     }
 
     const teamUpdated = await this.teamRepository.update(team_id, data);
 
     if (!teamUpdated) {
-      throw new Error("Falha ao atualizar o time");
+      throw new Error(Message.FAILED_UPDATE_TEAM);
     }
 
     if (data.leaderId) {

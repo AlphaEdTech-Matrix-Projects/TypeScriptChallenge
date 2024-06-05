@@ -3,17 +3,24 @@ import TeamService from "../services/TeamService";
 import AuthorizedNeed from "../utils/AuthorizedNeed";
 import { z } from "zod";
 
-const UuidParse = z.string().uuid();
+const UuidParse = z
+  .string({ message: "ID precisa ser uma string" })
+  .uuid({ message: "ID precisa ser um UUID válido" });
 
 const CreateTeamDto = z.object({
   name: z.string(),
-  leaderId: z.string().uuid(),
+  leaderId: z
+    .string({ message: "LeaderId precisa ser uma string" })
+    .uuid({ message: "LeaderId precisa ser um UUID válido" }),
 });
 export type CreateTeamDto = z.infer<typeof CreateTeamDto>;
 
 const UpdateTeamDto = z.object({
-  name: z.string().optional(),
-  leaderId: z.string().uuid().optional(),
+  name: z.string({ message: "Nome do time precisa ser uma string" }).optional(),
+  leaderId: z
+    .string({ message: "LeaderId precisa ser uma string" })
+    .uuid({ message: "LeaderId precisa ser um UUID válido" })
+    .optional(),
 });
 export type UpdateTeamDto = z.infer<typeof UpdateTeamDto>;
 
