@@ -101,7 +101,7 @@ export default class UserRepository {
 
   public async createUser(user: IUser): Promise<IUser> {
     const result: QueryResultRow = await database.executeQuery({
-      query: `INSERT INTO users(username, firstName, lastName, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      query: `INSERT INTO users(username, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       args: [
         user.username,
         user.firstName,
