@@ -36,8 +36,8 @@ export default class UserService {
     
     let oldUser;
    
-    if (logedUser.isAdmin !== true){
-      oldUser = await this.userRepository.getUserById(logedUser.id);
+    if (logedUser.isAdmin !== true && logedUser.id !== id){
+      //oldUser = await this.userRepository.getUserById(logedUser.id);
     }else{
      oldUser = await this.userRepository.getUserById(id);
     }
