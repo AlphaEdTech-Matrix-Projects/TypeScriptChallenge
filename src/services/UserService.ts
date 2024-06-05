@@ -1,6 +1,7 @@
 import { IUser } from "../interfaces/interfaces";
 import UserRepository from "../repositories/UserRepository";
 import { ForbiddenException, NotFoundException, UnauthorizedException } from "../utils/Exception";
+import { Message } from "../utils/Message";
 import BcryptService from "./BcryptService";
 
 export default class UserService {
@@ -37,24 +38,24 @@ export default class UserService {
     let oldUser;
    
     if (logedUser.isAdmin !== true && logedUser.id !== id){
-      //oldUser = await this.userRepository.getUserById(logedUser.id);
+      throw new ForbiddenException(Message.UNAUTHORIZED_ACTION)
     }else{
      oldUser = await this.userRepository.getUserById(id);
     }
     if (!oldUser) {
-      throw new NotFoundException("Usuário não encontrado");
+      throw new NotFoundException(Message.USER_NOT_FOUND);
     }
     if(fields.email){
       const oldEmail = await this.userRepository.getUserByEmail(fields.email);
       if(oldEmail){
-        throw new ForbiddenException("Email já utilizado");
+        throw new ForbiddenException(Message.DUPLICATED_EMAIL);
       }
     }    
     if(fields.squadId && logedUser.isAdmin !== true){
-      throw new UnauthorizedException("Você não tem permissão para essa ação");
+      throw new UnauthorizedException(Message.UNAUTHORIZED_ACCESS);
     }
     if(fields.isAdmin && logedUser.isAdmin !== true){
-      throw new UnauthorizedException("Você não tem permissão para essa ação");
+      throw new UnauthorizedException(Message.UNAUTHORIZED_ACCESS);
     }
     
     const newUser:IUser = {
@@ -72,12 +73,12 @@ export default class UserService {
  
   public async deleteUserById(id: string,logedUser:IUser): Promise<IUser | null> {
     if(logedUser.isAdmin !== true){
-      throw new UnauthorizedException("Você não tem permissão para essa ação");
+      throw new UnauthorizedException(Message.UNAUTHORIZED_ACTION);
     }
     const result = await this.userRepository.getUserById(id);
 
     if(!result){
-      throw new NotFoundException("Usuário não encontrado");
+      throw new NotFoundException(Message.USER_NOT_FOUND);
     }
 
     return await this.userRepository.deleteUserById(result);
