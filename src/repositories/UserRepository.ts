@@ -7,7 +7,7 @@ export default class UserRepository {
     try {
       const result: QueryResultRow = await database.executeQuery({
         query: `Select * FROM users WHERE id = $1`,
-        args: [id],
+        args: [id]
       });
 
       if (!result || result.length === 0) {
@@ -20,8 +20,8 @@ export default class UserRepository {
         firstName: result[0].first_name,
         lastName: result[0].last_name,
         email: result[0].email,
-        isAdmin: result[0].is_admin,
-      };
+        isAdmin: result[0].is_admin
+      }
 
       return user;
     } catch (error: any) {
