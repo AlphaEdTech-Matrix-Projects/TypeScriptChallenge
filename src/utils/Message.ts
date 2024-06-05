@@ -6,5 +6,7 @@ export const Message = {
   LOGIN_SUCCESS: "Login realizado com sucesso",
   LOGOUT_SUCCESS: "Desconectou com sucesso",
 
+  USER_NOT_FOUND: "Usuário não encontrado",
   TEAM_NOT_FOUND: "Time não encontrado",
+  DUPLICATED_EMAIL: "Email já utilizado"
 } as const;
