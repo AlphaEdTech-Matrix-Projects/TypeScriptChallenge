@@ -8,13 +8,17 @@ export default class UserService {
     this.userRepository = new UserRepository();
   }
 
-  public async getUserById(id: string): Promise<IUser> {
-    try {
+  public async getUserById(id: string): Promise<IUser | null> {
+    return await this.userRepository.getUserById(id);
+  }
 
-      return await this.userRepository.getUserById(id);
+  public async getAllUsers(): Promise<IUser[]> {
+    return await this.userRepository.getAllUsers();
+  }
 
-    } catch (exception: any) {
-      throw exception;
-    }
+  public async getUserAllDataByUsername(
+    username: string
+  ): Promise<IUser | null> {
+    return await this.userRepository.getUserAllDataByUsername(username);
   }
 }
