@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import UserService from "../services/UserService";
-import { UsernameOrPasswordIncorrectException } from "../utils/Exception";
 import { Message } from "../utils/Message";
-import BcryptService from "../services/BcryptService";
 import AuthService from "../services/AuthService";
+import AuthorizedNeed from "../utils/AuthorizedNeed";
 
 const LoginDto = z.object({
   username: z.string({ message: "Usuário obrigatório" }),
@@ -36,8 +34,19 @@ export default class AuthController {
     }
   }
 
-  public async logout(req: Request, res: Response): Promise<void> {
+  public async logout(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-    } catch (error) {}
+      AuthorizedNeed(req);
+
+      res.clearCookie("token");
+
+      res.status(200).json({ message: Message.LOGOUT_SUCCESS });
+    } catch (error) {
+      next(error);
+    }
   }
 }
