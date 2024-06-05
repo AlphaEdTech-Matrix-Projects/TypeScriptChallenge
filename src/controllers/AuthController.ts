@@ -7,8 +7,8 @@ import BcryptService from "../services/BcryptService";
 import AuthService from "../services/AuthService";
 
 const LoginDto = z.object({
-  username: z.string(),
-  password: z.string(),
+  username: z.string({ message: "Usuário obrigatório" }),
+  password: z.string({ message: "Senha é obrigatória" }),
 });
 
 export default class AuthController {

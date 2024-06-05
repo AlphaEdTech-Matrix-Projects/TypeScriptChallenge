@@ -1,5 +1,6 @@
 import { ErrorRequestHandler } from "express";
 import { JsonWebTokenError } from "jsonwebtoken";
+import { ZodError } from "zod";
 
 export const ErrorHandlerMidleware: ErrorRequestHandler = (
   err,
@@ -7,16 +8,20 @@ export const ErrorHandlerMidleware: ErrorRequestHandler = (
   res,
   next
 ) => {
+  const name = err.name || "Error Internal";
+  let statusCode = err.statusCode || 500;
+  let message = err.message || "Internal Server error";
+  const error = process.env.APP_ENV === "dev" ? err.stack : "";
+
   switch (err.constructor) {
     case JsonWebTokenError:
-      err.statusCode = 401;
+      statusCode = 401;
+      break;
+    case ZodError:
+      statusCode = 400;
+      message = JSON.parse(err.message)[0].message;
       break;
   }
-
-  const name = err.name || "Error Internal";
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server error";
-  const error = process.env.APP_ENV === "dev" ? err.stack : "";
 
   res.status(statusCode).send({ name, message, stack: error });
 };

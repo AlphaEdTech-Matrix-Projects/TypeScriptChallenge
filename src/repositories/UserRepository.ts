@@ -10,6 +10,10 @@ export default class UserRepository {
         args: [id],
       });
 
+      if (!result || result.length === 0) {
+        return null;
+      }
+
       const user: IUser = {
         id: result[0].id,
         username: result[0].username,
@@ -32,6 +36,10 @@ export default class UserRepository {
       query: `Select * FROM users WHERE username = $1`,
       args: [username],
     });
+
+    if (!result || result.length === 0) {
+      return null;
+    }
 
     const user: IUser = {
       id: result[0].id,
