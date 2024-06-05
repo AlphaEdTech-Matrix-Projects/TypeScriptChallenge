@@ -6,6 +6,7 @@ import AuthorizedNeed from "../utils/AuthorizedNeed";
 import { Message } from "../utils/Message";
 import HttpResponse from "../utils/HttpResponse";
 import { z } from "zod";
+import TeamService from "../services/TeamService";
 
 const validate = z.object({
   username: z.string().min(1, { message: "Usuário obrigatório" }),
@@ -17,9 +18,11 @@ const validate = z.object({
 
 export default class UserController {
   private userService: UserService;
+  private teamService: TeamService;
 
   constructor() {
     this.userService = new UserService();
+    this.teamService = new TeamService();
   }
 
   public async getMyUser(
@@ -49,9 +52,9 @@ export default class UserController {
     try {
       AuthorizedNeed(req);
       const user = req.authUser;
-      /* if (!user.isAdmin) {
+      if (!user.isAdmin) {
         throw new ForbiddenException(Message.UNAUTHORIZED_ACTION);
-      } */
+      }
 
       const usersList = await this.userService.getAllUsers();
 
@@ -68,8 +71,14 @@ export default class UserController {
 
   public async getUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      AuthorizedNeed(req);
       const id = req.params.user_id;
       const user = await this.userService.getUserById(id);
+
+      const userLoged = req.authUser;
+      if (userLoged.isAdmin !== true) {
+        throw new UnauthorizedException(Message.UNAUTHORIZED_ACCESS);
+      }
 
       const response = new HttpResponse({
         status: 200,
@@ -102,6 +111,7 @@ export default class UserController {
 
   public async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      AuthorizedNeed(req);
       const validatePartial = validate.partial();
       const { username, firstName, lastName, email, password } = validatePartial.parse(req.body);
       const fiels: Partial<IUser> = req.body;
@@ -120,6 +130,7 @@ export default class UserController {
 
   public async deleteuser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      AuthorizedNeed(req);
       const id = req.params.user_id;
       const logedUser = req.authUser;
       const result = await this.userService.deleteUserById(id, logedUser);
