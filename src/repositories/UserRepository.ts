@@ -7,7 +7,7 @@ export default class UserRepository {
     try {
       const result: QueryResultRow = await database.executeQuery({
         query: `Select * FROM users WHERE id = $1`,
-        args: [id],
+        args: [id]
       });
 
       if (!result || result.length === 0) {
@@ -20,8 +20,8 @@ export default class UserRepository {
         firstName: result[0].first_name,
         lastName: result[0].last_name,
         email: result[0].email,
-        isAdmin: result[0].is_admin,
-      };
+        isAdmin: result[0].is_admin
+      }
 
       return user;
     } catch (error: any) {
@@ -48,6 +48,30 @@ export default class UserRepository {
       lastName: result[0].last_name,
       email: result[0].email,
       password: result[0].password,
+      isAdmin: result[0].is_admin,
+    };
+
+    return user;
+  }
+
+  public async getUserByEmail(
+    email: string
+  ): Promise<IUser | null> {
+    const result: QueryResultRow = await database.executeQuery({
+      query: `Select * FROM users WHERE email = $1`,
+      args: [email],
+    });
+
+    if (!result || result.length === 0) {
+      return null;
+    }
+
+    const user: IUser = {
+      id: result[0].id,
+      username: result[0].username,
+      firstName: result[0].first_name,
+      lastName: result[0].last_name,
+      email: result[0].email,
       isAdmin: result[0].is_admin,
     };
 
@@ -95,5 +119,73 @@ export default class UserRepository {
     };
 
     return createdUser;
+  }
+
+  public async updateUserById(user: Partial<IUser> & { id: string }): Promise<IUser | null> {
+    const { id, username, firstName, lastName, email, password, squadId, isAdmin } = user;
+
+    try {
+      const result: QueryResultRow = await database.executeQuery({
+        query: `
+          UPDATE users
+          SET 
+            username = COALESCE($1, username),
+            first_name = COALESCE($2, first_name),
+            last_name = COALESCE($3, last_name),
+            email = COALESCE($4, email),
+            password = COALESCE($5, password),
+            fk_squad_id = COALESCE($6, fk_squad_id),
+            is_admin = COALESCE($7, is_admin)
+          WHERE id = $8
+          RETURNING *;
+        `,
+        args: [username, firstName, lastName, email, password, squadId, isAdmin, id],
+      });
+
+      if (!result || result.length === 0) {
+        return null;
+      }
+
+      const updatedUser: IUser = {
+        id: result[0].id,
+        username: result[0].username,
+        firstName: result[0].first_name,
+        lastName: result[0].last_name,
+        email: result[0].email,
+        squadId: result[0].fk_squad_id,
+        isAdmin: result[0].is_admin,
+      };
+
+      return updatedUser;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  public async deleteUserById(user: IUser):Promise<IUser | null> {
+    try{
+      const result:QueryResultRow = await database.executeQuery({
+        query: `DELETE FROM users WHERE id = $1`,
+        args: [user.id]
+      });
+
+      if (!result || result.length === 0) {
+        return null;
+      }
+
+      const deletedUser: IUser = {
+        id: result[0].id,
+        username: result[0].username,
+        firstName: result[0].first_name,
+        lastName: result[0].last_name,
+        email: result[0].email,
+        squadId: result[0].fk_squad_id,
+        isAdmin: result[0].is_admin,
+      };
+
+      return deletedUser;
+    }catch(error){
+      throw error;
+    }
   }
 }
