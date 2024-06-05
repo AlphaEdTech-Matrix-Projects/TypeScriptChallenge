@@ -5,4 +5,6 @@ export const Message = {
   USERNAME_OR_PASSWORD_INCORRECT: "Usuario ou senha incorretos",
   LOGIN_SUCCESS: "Login realizado com sucesso",
   LOGOUT_SUCCESS: "Desconectou com sucesso",
+
+  TEAM_NOT_FOUND: "Time não encontrado",
 } as const;

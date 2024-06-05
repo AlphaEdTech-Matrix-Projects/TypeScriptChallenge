@@ -7,6 +7,6 @@ const router: Router = express.Router();
 
 router.use("", authRouter);
 router.use("/users", userRouter);
-router.use("teams", teamsRouter);
+router.use("/teams", teamsRouter);
 
 export default router;

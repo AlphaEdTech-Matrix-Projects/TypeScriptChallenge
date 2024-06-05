@@ -10,12 +10,12 @@ export interface IUser {
   lastName: string;
   email: string;
   password?: string;
-  squadId?: string;
+  squadId?: string | null;
   isAdmin: boolean;
 }
 
 export interface ISquad {
-  id?: string;
+  id: string;
   name: string;
   leaderId: string;
 }
