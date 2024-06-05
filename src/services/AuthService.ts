@@ -1,6 +1,6 @@
 import UserRepository from "../repositories/UserRepository";
 import { UsernameOrPasswordIncorrectException } from "../utils/Exception";
-import JwtTokenService from "../utils/JwtTokenService";
+import JwtTokenService from "./JwtTokenService";
 import { Message } from "../utils/Message";
 import BcryptService from "./BcryptService";
 
