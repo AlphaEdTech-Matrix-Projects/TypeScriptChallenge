@@ -188,7 +188,7 @@ export default class UserRepository {
   public async deleteUserById(user: IUser): Promise<IUser | null> {
     try {
       const result: QueryResultRow = await database.executeQuery({
-        query: `DELETE FROM users WHERE id = $1`,
+        query: `DELETE FROM users WHERE id = $1 RETURNING *`,
         args: [user.id],
       });
 
